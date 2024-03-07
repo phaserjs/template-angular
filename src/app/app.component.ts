@@ -11,43 +11,62 @@ import { EventBus } from '../game/EventBus';
     imports: [CommonModule, RouterOutlet, PhaserGame],
     templateUrl: './app.component.html'
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent implements AfterViewInit
+{
 
     public spritePosition = { x: 0, y: 0 };
     public canMoveSprite = false;
 
-    // This is a reference to the PhaserGame component
-    @ViewChild(PhaserGame) phaserGame!: PhaserGame;
+    // This is a reference from the PhaserGame component
+    @ViewChild(PhaserGame) phaserRef!: PhaserGame;
 
-    ngAfterViewInit() {
+    ngAfterViewInit()
+    {
         EventBus.on('current-scene-ready', (scene: Phaser.Scene) => {
             this.canMoveSprite = scene.scene.key !== 'MainMenu';
         });
     }
 
     // These methods are called from the template
-    public changeScene() {
-        if (this.phaserGame.scene) {
-            const scene = this.phaserGame.scene as MainMenu;
+    public changeScene()
+    {
+
+        if (this.phaserRef.scene)
+        {
+
+            const scene = this.phaserRef.scene as MainMenu;
             scene.changeScene();
+
         }
+
     }
 
-    public moveSprite() {
+    public moveSprite()
+    {
 
-        if (this.phaserGame.scene) {
-            const scene = this.phaserGame.scene as MainMenu;
+        if (this.phaserRef.scene)
+        {
+
+            const scene = this.phaserRef.scene as MainMenu;
 
             // Get the update logo position
             scene.moveLogo(({ x, y }) => {
+
                 this.spritePosition = { x, y };
+
             });
+
         }
+
     }
 
-    public addSprite() {
-        if (this.phaserGame.scene) {
-            const scene = this.phaserGame.scene;
+    public addSprite()
+    {
+
+        if (this.phaserRef.scene)
+        {
+
+            const scene = this.phaserRef.scene;
             // Add more stars
             const x = Phaser.Math.Between(64, scene.scale.width - 64);
             const y = Phaser.Math.Between(64, scene.scale.height - 64);
@@ -65,7 +84,9 @@ export class AppComponent implements AfterViewInit {
                 yoyo: true,
                 repeat: -1
             });
+
         }
+
     }
 
 }
