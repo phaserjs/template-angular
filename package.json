@@ -1,6 +1,6 @@
 {
     "name": "template-angular",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "A Phaser 3 project template that demonstrates Angular communication.",
     "repository": {
         "type": "git",
