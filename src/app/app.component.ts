@@ -1,14 +1,15 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import type { AfterViewInit} from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { PhaserGame } from '../game/phaser-game.component';
-import { MainMenu } from '../game/scenes/MainMenu';
+import { PhaserGameComponent } from '../game/phaser-game.component';
+import type { MainMenu } from '../game/scenes/MainMenu';
 import { CommonModule } from '@angular/common';
 import { EventBus } from '../game/EventBus';
 
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [CommonModule, RouterOutlet, PhaserGame],
+    imports: [CommonModule, RouterOutlet, PhaserGameComponent],
     templateUrl: './app.component.html'
 })
 export class AppComponent implements AfterViewInit
@@ -18,7 +19,7 @@ export class AppComponent implements AfterViewInit
     public canMoveSprite = false;
 
     // This is a reference from the PhaserGame component
-    @ViewChild(PhaserGame) phaserRef!: PhaserGame;
+    @ViewChild(PhaserGameComponent) phaserRef!: PhaserGameComponent;
 
     ngAfterViewInit()
     {
