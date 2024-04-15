@@ -1,93 +1,70 @@
-import type { AfterViewInit} from '@angular/core';
-import { Component, ViewChild } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { PhaserGameComponent } from '../game/phaser-game.component';
-import type { MainMenu } from '../game/scenes/MainMenu';
-import { CommonModule } from '@angular/common';
+import { JsonPipe } from '@angular/common';
+import type { OnInit } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    signal,
+    viewChild,
+} from '@angular/core';
+import type { Scene } from 'phaser';
+import { Math as PhaserMath } from 'phaser';
 import { EventBus } from '../game/EventBus';
-
+import { PhaserGameComponent } from '../game/phaser-game.component';
+import { isGameScene } from '../game/scenes/GameScene.abstract';
+import type { MainMenu } from '../game/scenes/MainMenu';
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [CommonModule, RouterOutlet, PhaserGameComponent],
-    templateUrl: './app.component.html'
+    imports: [PhaserGameComponent, JsonPipe],
+    templateUrl: './app.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements AfterViewInit
-{
+export class AppComponent implements OnInit {
+    spritePosition = signal({ x: 0, y: 0 });
+    canMoveSprite = signal(false);
+    phaserRef = viewChild.required(PhaserGameComponent);
 
-    public spritePosition = { x: 0, y: 0 };
-    public canMoveSprite = false;
-
-    // This is a reference from the PhaserGame component
-    @ViewChild(PhaserGameComponent) phaserRef!: PhaserGameComponent;
-
-    ngAfterViewInit()
-    {
-        EventBus.on('current-scene-ready', (scene: Phaser.Scene) => {
-            this.canMoveSprite = scene.scene.key !== 'MainMenu';
+    ngOnInit() {
+        EventBus.on('current-scene-ready', (scene: Scene) => {
+            this.canMoveSprite.set(scene.scene.key !== 'MainMenu');
         });
     }
 
     // These methods are called from the template
-    public changeScene()
-    {
-
-        if (this.phaserRef.scene)
-        {
-
-            const scene = this.phaserRef.scene as MainMenu;
+    public changeScene() {
+        const scene = this.phaserRef().scene;
+        if (isGameScene(scene)) {
             scene.changeScene();
-
         }
-
     }
 
-    public moveSprite()
-    {
+    public moveSprite() {
+        const scene = this.phaserRef().scene as MainMenu;
 
-        if (this.phaserRef.scene)
-        {
-
-            const scene = this.phaserRef.scene as MainMenu;
-
-            // Get the update logo position
-            scene.moveLogo(({ x, y }) => {
-
-                this.spritePosition = { x, y };
-
-            });
-
-        }
-
+        // Get the update logo position
+        scene.moveLogo(({ x, y }) => {
+            this.spritePosition.set({ x, y });
+        });
     }
 
-    public addSprite()
-    {
+    public addSprite() {
+        const scene = this.phaserRef().scene;
+        // Add more stars
+        const x = PhaserMath.Between(64, scene.scale.width - 64);
+        const y = PhaserMath.Between(64, scene.scale.height - 64);
 
-        if (this.phaserRef.scene)
-        {
+        //  `add.sprite` is a Phaser GameObjectFactory method and it returns a Sprite Game Object instance
+        const star = scene.add.sprite(x, y, 'star');
 
-            const scene = this.phaserRef.scene;
-            // Add more stars
-            const x = Phaser.Math.Between(64, scene.scale.width - 64);
-            const y = Phaser.Math.Between(64, scene.scale.height - 64);
-
-            //  `add.sprite` is a Phaser GameObjectFactory method and it returns a Sprite Game Object instance
-            const star = scene.add.sprite(x, y, 'star');
-
-            //  ... which you can then act upon. Here we create a Phaser Tween to fade the star sprite in and out.
-            //  You could, of course, do this from within the Phaser Scene code, but this is just an example
-            //  showing that Phaser objects and systems can be acted upon from outside of Phaser itself.
-            scene.add.tween({
-                targets: star,
-                duration: 500 + Math.random() * 1000,
-                alpha: 0,
-                yoyo: true,
-                repeat: -1
-            });
-
-        }
-
+        //  ... which you can then act upon. Here we create a Phaser Tween to fade the star sprite in and out.
+        //  You could, of course, do this from within the Phaser Scene code, but this is just an example
+        //  showing that Phaser objects and systems can be acted upon from outside of Phaser itself.
+        scene.add.tween({
+            targets: star,
+            duration: 500 + Math.random() * 1000,
+            alpha: 0,
+            yoyo: true,
+            repeat: -1,
+        });
     }
-
 }

@@ -48,11 +48,11 @@
             <button class="button" (click)="changeScene()">Change Scene</button>
         </div>
         <div>
-            <button class="button" [disabled]="canMoveSprite" (click)="moveSprite()">Toggle Movement</button>
+            <button class="button" [disabled]="canMoveSprite()" (click)="moveSprite()">Toggle Movement</button>
         </div>
         <div class="spritePosition">
             Sprite Position:
-            <pre>{{ spritePosition | json }}</pre>
+            <pre>{{ spritePosition() | json }}</pre>
         </div>
         <div>
             <button class="button" (click)="addSprite()">Add New Sprite</button>

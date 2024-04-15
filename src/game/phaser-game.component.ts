@@ -1,49 +1,42 @@
-import type { OnInit } from "@angular/core";
-import { Component } from "@angular/core";
-import type Phaser from "phaser";
-import { EventBus } from "./EventBus";
-import StartGame from "./main";
+import type { AfterViewInit, ElementRef } from '@angular/core';
+import
+    {
+        ChangeDetectionStrategy,
+        Component,
+        DestroyRef,
+        inject,
+        viewChild,
+    } from '@angular/core';
+import type { Game, Scene } from 'phaser';
+import { EventBus } from './EventBus';
+import { StartGame } from './main';
+import type { GameScene } from './scenes/GameScene.abstract';
 
 @Component({
     selector: 'app-phaser-game',
-    template: '<div id="game-container"></div>',
+    template: `<div #game></div>`,
     standalone: true,
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PhaserGameComponent implements OnInit
-{
+export class PhaserGameComponent implements AfterViewInit {
+    scene: Scene;
+    game: Game;
+    gameContainer = viewChild.required<ElementRef<HTMLDivElement>>('game');
 
-    scene: Phaser.Scene;
-    game: Phaser.Game;
+    private detroyRef = inject(DestroyRef);
 
-    sceneCallback: (scene: Phaser.Scene) => void;
+    sceneCallback: (scene: Scene) => void;
 
-    ngOnInit()
-    {
-        this.game = StartGame('game-container');
+    ngAfterViewInit(): void {
+        this.game = StartGame(this.gameContainer().nativeElement);
 
-        EventBus.on('current-scene-ready', (scene: Phaser.Scene) => {
-
+        EventBus.on('current-scene-ready', (scene: GameScene) => {
             this.scene = scene;
-
-            if (this.sceneCallback)
-            {
-
+            if (this.sceneCallback) {
                 this.sceneCallback(scene);
-
             }
-
         });
-    }
 
-    // Component unmounted
-    ngOnDestroy()
-    {
-
-        if (this.game)
-        {
-
-            this.game.destroy(true);
-
-        }
+        this.detroyRef.onDestroy(() => this.game?.destroy(true));
     }
 }

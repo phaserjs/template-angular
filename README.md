@@ -71,7 +71,7 @@ EventBus.on('event-name', (data) => {
 });
 ```
 
-In addition to this, the `phaser-game` component exposes the Phaser game instance along with the most recently active Phaser Scene. You can pick these up from Angular via `@ViewChild(PhaserGame) phaserRef!: PhaserGame;` (we explain this later).
+In addition to this, the `phaser-game` component exposes the Phaser game instance along with the most recently active Phaser Scene. You can pick these up from Angular via `phaserRef = viewChild.required(PhaserGameComponent);` (we explain this later).
 
 ## Phaser Scene Handling
 
@@ -107,26 +107,26 @@ You don't have to emit this event if you don't need to access the specific scene
 Here's an example of how to access Phaser data for use in a Angular Component:
 
 ```ts
-import { PhaserGame } from '../game/phaser-game.component';
+import { PhaserGameComponent } from '../game/phaser-game.component';
 
 @Component({
     selector: 'app-root',
     standalone: true,
-    imports: [ PhaserGame],
+    imports: [PhaserGameComponent],
     templateUrl: './app.component.html'
 })
 export class AppComponent implements AfterViewInit {
 
     // This is a reference from the PhaserGame component
-    @ViewChild(PhaserGame) phaserRef!: PhaserGame;
+    phaserRef = viewChild.required(PhaserGameComponent);
 
     ngAfterViewInit() {
 
         // This is the Phaser Game instance
-        const game = this.phaserRef.game;
+        const game = this.phaserRef().game;
 
         // This is the most recently active Scene
-        const scene = this.phaserRef.scene;
+        const scene = this.phaserRef().scene;
 
         // Listen for the current active ready scene
         EventBus.on('current-scene-ready', (scene: Phaser.Scene) => {
@@ -136,9 +136,9 @@ export class AppComponent implements AfterViewInit {
 }
 ```
 
-In the code above, you can get a reference to the current Phaser Game instance and the current Scene by calling `@ViewChild(PhaserGame) phaserRef!: PhaserGame`.
+In the code above, you can get a reference to the current Phaser Game instance and the current Scene by consuming the required signal `phaserRef = viewChild.require(PhaserGameComponent);`.
 
-From this component reference, the game instance is available via `this.phaserRef.game` and the most recently active Scene via `this.phaserRef.scene`
+From this component reference, the game instance is available via `this.phaserRef().game` and the most recently active Scene via `this.phaserRef().scene`
 
 The `EventBus.on('current-scene-ready')` callback will also be invoked whenever the the Phaser Scene changes, as long as you emit the event via the EventBus, as outlined above.
 
