@@ -4,5 +4,7 @@
     "typescript.format.placeOpenBraceOnNewLineForControlBlocks": true,
     "typescript.format.placeOpenBraceOnNewLineForFunctions": true,
     "javascript.format.insertSpaceBeforeFunctionParenthesis": true,
-
+    "editor.codeActionsOnSave": {
+        "source.fixAll": "explicit"
+    }
 }
