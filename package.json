@@ -1,6 +1,6 @@
 {
     "name": "template-angular",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A Phaser 3 project template that demonstrates Angular communication.",
     "repository": {
         "type": "git",
@@ -21,8 +21,10 @@
     ],
     "scripts": {
         "ng": "ng",
-        "dev": "ng serve",
-        "build": "ng build --base-href='./'"
+        "dev": "node log dev & ng serve",
+        "build": "node log.js build & ng build --base-href='./'",
+        "dev-nolog": "ng serve",
+        "build-nolog": "ng build --base-href='./'"
     },
     "dependencies": {
         "@angular/animations": "^17.2.0",
@@ -33,7 +35,7 @@
         "@angular/platform-browser": "^17.2.0",
         "@angular/platform-browser-dynamic": "^17.2.0",
         "@angular/router": "^17.2.0",
-        "phaser": "^3.80.1",
+        "phaser": "^3.85.0",
         "rxjs": "~7.8.0",
         "tslib": "^2.3.0",
         "zone.js": "~0.14.3"
