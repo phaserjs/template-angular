@@ -6,7 +6,7 @@ This is a Phaser 3 project template that uses the Angular framework. It includes
 
 This template has been updated for:
 
-- [Phaser 3.85.0](https://github.com/phaserjs/phaser)
+- [Phaser 3.85.1](https://github.com/phaserjs/phaser)
 - [Angular 17.2.0](https://github.com/angular)
 - [TypeScript 5.3.2](https://github.com/microsoft/TypeScript)
 
@@ -220,6 +220,7 @@ After:
 ```
 
 Either of these will stop `log.js` from running. If you do decide to do this, please could you at least join our Discord and tell us which template you're using! Or send us a quick email. Either will be super-helpful, thank you.
+
 
 ## Join the Phaser Community!
 
