@@ -136,7 +136,7 @@ export class AppComponent implements AfterViewInit {
 }
 ```
 
-In the code above, you can get a reference to the current Phaser Game instance and the current Scene by consuming the required signal `phaserRef = viewChild.require(PhaserGameComponent);`.
+In the code above, you can get a reference to the current Phaser Game instance and the current Scene by consuming the required signal `phaserRef = viewChild.required(PhaserGameComponent);`.
 
 From this component reference, the game instance is available via `this.phaserRef().game` and the most recently active Scene via `this.phaserRef().scene`
 
