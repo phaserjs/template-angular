@@ -39,18 +39,25 @@ Once the server is running you can edit any of the files in the `src` folder. An
 
 We have provided a default project structure to get you started. This is as follows:
 
-- `index.html` - The HTML Angular entry point.
-- `src` - Contains the Angular source code.
-- `src/main.ts` - The main **Angular** entry point. This bootstraps the Angular application.
-- `src/app/app.component.ts` - The main Angular component.
-- `src/app/app.component.html` - The main HTML Angular component.
-- `src/game/phaser-game.component.ts` - The Angular component that initializes the Phaser Game and serve like a bridge between Angular and Phaser.
-- `src/game/EventBus.ts` - A simple event bus to communicate between Angular and Phaser.
-- `src/game` - Contains the game source code.
-- `src/game/main.ts` - The main **game** entry point. This contains the game configuration and start the game.
-- `src/game/scenes/` - The Phaser Scenes are in this folder.
-- `src/style.css` - Some simple CSS rules to help with page layout.
-- `src/assets` - Contains the static assets used by the game.
+| Path                                 | Description                                                |
+|--------------------------------------|------------------------------------------------------------|
+| `public/assets`                      | Game sprites, audio, etc. Served directly at runtime       |
+| `src/index.html`                     | Angular entry point (HTML)                                 |
+| `src/main.ts`                        | Angular application bootstrap                              |
+| `src/style.css`                      | Global layout styles                                       |
+| `src/app/app.component.ts`           | Root Angular component                                     |
+| `src/app/app.component.html`         | HTML template for the app component                        |
+| `src/app/phaser-game.component.ts`   | Bridge between Angular and your Phaser game                |
+| `package.json`                       | Project dependencies and scripts                           |
+
+
+| 🕹️ Game  (Phaser)                    |                                                            |
+|--------------------------------------|------------------------------------------------------------|
+| `src/game/main.ts`                   | Game bootstrap and configuration                           |
+| `src/game/EventBus.ts`               | Angular ↔ Phaser communication bridge                      |
+| `src/game/scenes/MainMenu.ts`        | Example Phaser scene                                       |
+| `src/game/scenes/GameScene.ts`       | Another example game scene                                 |
+
 
 ## Angular Bridge
 
@@ -73,11 +80,11 @@ EventBus.on('event-name', (data) => {
 });
 ```
 
-In addition to this, the `phaser-game` component exposes the Phaser game instance along with the most recently active Phaser Scene. You can pick these up from Angular via `@ViewChild(PhaserGame) phaserRef!: PhaserGame;` (we explain this later).
+In addition to this, the `phaser-game` component exposes the Phaser game instance along with the most recently active Phaser Scene. You can pick these up from Angular via `phaserRef = viewChild.required(PhaserGame);` (we explain this later).
 
 ## Phaser Scene Handling
 
-In Phaser, the Scene is the lifeblood of your game. It is where you sprites, game logic and all of the Phaser systems live. You can also have multiple scenes running at the same time. This template provides a way to obtain the current active scene from Vue.
+In Phaser, the Scene is the lifeblood of your game. It is where you sprites, game logic and all of the Phaser systems live. You can also have multiple scenes running at the same time. This template provides a way to obtain the current active scene from Angular.
 
 You can get the current Phaser Scene from the component event `"current-active-scene"`. In order to do this, you need to emit the event `"current-scene-ready"` from the Phaser Scene class. This event should be emitted when the scene is ready to be used. You can see this done in all of the Scenes in our template.
 
@@ -109,36 +116,38 @@ You don't have to emit this event if you don't need to access the specific scene
 Here's an example of how to access Phaser data for use in a Angular Component:
 
 ```ts
+import { Component, viewChild } from '@angular/core';
 import { PhaserGame } from '../game/phaser-game.component';
+import { EventBus } from '../game/EventBus';
 
 @Component({
-    selector: 'app-root',
-    standalone: true,
-    imports: [ PhaserGame],
-    templateUrl: './app.component.html'
+  selector: 'app-root',
+  standalone: true,
+  imports: [PhaserGame],
+  templateUrl: './app.component.html'
 })
-export class AppComponent implements AfterViewInit {
+export class AppComponent
+{
 
-    // This is a reference from the PhaserGame component
-    @ViewChild(PhaserGame) phaserRef!: PhaserGame;
+    phaserRef = viewChild.required(PhaserGame);
 
-    ngAfterViewInit() {
+    constructor ()
+    {
 
-        // This is the Phaser Game instance
-        const game = this.phaserRef.game;
+        const game = this.phaserRef().game;
+        const scene = this.phaserRef().scene;
 
-        // This is the most recently active Scene
-        const scene = this.phaserRef.scene;
-
-        // Listen for the current active ready scene
         EventBus.on('current-scene-ready', (scene: Phaser.Scene) => {
-            
+            // Handle the ready scene
         });
+
     }
+
 }
+
 ```
 
-In the code above, you can get a reference to the current Phaser Game instance and the current Scene by calling `@ViewChild(PhaserGame) phaserRef!: PhaserGame`.
+In the code above, you can get a reference to the current Phaser Game instance and the current Scene by calling `phaserRef = viewChild.required(PhaserGame);`.
 
 From this component reference, the game instance is available via `this.phaserRef.game` and the most recently active Scene via `this.phaserRef.scene`
 
@@ -161,7 +170,7 @@ preload ()
 }
 ```
 
-When you issue the `npm run build` command, all static assets are automatically copied to the `dist/assets` folder.
+When you issue the `npm run build` command, all static assets are automatically copied to the `dist/browser/assets` folder.
 
 ## Deploying to Production
 
