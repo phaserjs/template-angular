@@ -48,15 +48,9 @@ We have provided a default project structure to get you started. This is as foll
 | `src/app/app.component.ts`           | Root Angular component                                     |
 | `src/app/app.component.html`         | HTML template for the app component                        |
 | `src/app/phaser-game.component.ts`   | Bridge between Angular and your Phaser game                |
-| `package.json`                       | Project dependencies and scripts                           |
-
-
-| 🕹️ Game  (Phaser)                    |                                                            |
-|--------------------------------------|------------------------------------------------------------|
 | `src/game/main.ts`                   | Game bootstrap and configuration                           |
+| `src/game/scenes`                    | Folder with all Phaser game scenes.                        |
 | `src/game/EventBus.ts`               | Angular ↔ Phaser communication bridge                      |
-| `src/game/scenes/MainMenu.ts`        | Example Phaser scene                                       |
-| `src/game/scenes/GameScene.ts`       | Another example game scene                                 |
 
 
 ## Angular Bridge
