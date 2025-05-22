@@ -4,7 +4,7 @@
   "tasks": [
     {
       "type": "npm",
-      "script": "start",
+      "script": "jnwrld-mobile", // Changed from "dev" to "jnwrld-mobile"
       "isBackground": true,
       "problemMatcher": {
         "owner": "typescript",
